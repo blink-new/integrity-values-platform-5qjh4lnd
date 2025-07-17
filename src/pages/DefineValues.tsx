@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { Target, MessageCircle, CheckCircle, ArrowLeft } from 'lucide-react'
+import { Target, MessageCircle, CheckCircle, ArrowLeft, Send } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { blink } from '@/blink/client'
 
@@ -24,7 +24,7 @@ export default function DefineValues() {
   const [chatMessages, setChatMessages] = useState([
     {
       role: 'assistant',
-      content: "Hello! I'm here to help you discover and define your core values. This is a foundational step in building your personal accountability framework.\n\nLet's start with understanding what drives you. Can you tell me about a time when you felt most proud of yourself? What values were you honoring in that moment?"
+      content: "Hello! I'm here to help you discover and define your core values. This is a foundational step in building your personal accountability framework.\\n\\nLet's start with understanding what drives you. Can you tell me about a time when you felt most proud of yourself? What values were you honoring in that moment?"
     }
   ])
   const [currentMessage, setCurrentMessage] = useState('')
@@ -103,32 +103,39 @@ export default function DefineValues() {
   }
 
   if (!user) {
-    return <div>Loading...</div>
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b">
+      <header className="bg-white border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <Link to="/dashboard" className="text-slate-600 hover:text-slate-900">
+              <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
                 <ArrowLeft className="w-5 h-5" />
               </Link>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <Target className="w-5 h-5 text-white" />
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+                  <Target className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-xl font-bold text-slate-900">Define Your Values</span>
+                <span className="text-2xl font-bold text-foreground font-serif">Define Your Values</span>
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <div className="text-sm text-slate-600">
-                Progress: {values.length}/6 values
+            <div className="flex items-center space-x-6">
+              <div className="text-sm font-medium text-muted-foreground">
+                Progress: <span className="text-foreground">{values.length}/6 values</span>
               </div>
-              <Progress value={progress} className="w-32" />
+              <Progress value={progress} className="w-40 h-2" />
             </div>
           </div>
         </div>
@@ -137,43 +144,45 @@ export default function DefineValues() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-2 gap-8">
           {/* AI Chat Interface */}
-          <Card className="h-[600px] flex flex-col">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <MessageCircle className="w-5 h-5 text-blue-600" />
-                <span>AI Values Coach</span>
+          <Card className="h-[700px] flex flex-col shadow-lg border-0">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center space-x-3 text-xl">
+                <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <MessageCircle className="w-5 h-5 text-primary" />
+                </div>
+                <span className="font-serif">AI Values Coach</span>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-base">
                 Let's discover your core values through guided conversation
               </CardDescription>
             </CardHeader>
             
             <CardContent className="flex-1 flex flex-col">
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto space-y-4 mb-4">
+              <div className="flex-1 overflow-y-auto space-y-4 mb-6 pr-2">
                 {chatMessages.map((message, index) => (
                   <div
                     key={index}
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[80%] p-3 rounded-lg ${
+                      className={`max-w-[85%] p-4 rounded-2xl ${
                         message.role === 'user'
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-slate-100 text-slate-900'
+                          ? 'bg-primary text-white'
+                          : 'bg-muted text-foreground'
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
                     </div>
                   </div>
                 ))}
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-slate-100 p-3 rounded-lg">
+                    <div className="bg-muted p-4 rounded-2xl">
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       </div>
                     </div>
                   </div>
@@ -181,66 +190,73 @@ export default function DefineValues() {
               </div>
               
               {/* Input */}
-              <div className="flex space-x-2">
+              <div className="flex space-x-3">
                 <Textarea
                   value={currentMessage}
                   onChange={(e) => setCurrentMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Share your thoughts..."
-                  className="flex-1 min-h-[60px] resize-none"
+                  placeholder="Share your thoughts and experiences..."
+                  className="flex-1 min-h-[80px] resize-none"
                   disabled={isLoading}
                 />
                 <Button 
                   onClick={handleSendMessage}
                   disabled={!currentMessage.trim() || isLoading}
-                  className="self-end"
+                  className="self-end bg-primary hover:bg-primary/90 px-4 py-3 h-auto"
                 >
-                  Send
+                  <Send className="w-4 h-4" />
                 </Button>
               </div>
             </CardContent>
           </Card>
 
           {/* Values Document */}
-          <Card className="h-[600px] flex flex-col">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <CheckCircle className="w-5 h-5 text-emerald-600" />
-                <span>Your Values Document</span>
+          <Card className="h-[700px] flex flex-col shadow-lg border-0">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center space-x-3 text-xl">
+                <div className="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5 text-secondary" />
+                </div>
+                <span className="font-serif">Your Values Document</span>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-base">
                 Your defined values will appear here in real-time
               </CardDescription>
             </CardHeader>
             
             <CardContent className="flex-1 overflow-y-auto">
               {values.length === 0 ? (
-                <div className="text-center py-12">
-                  <Target className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                  <p className="text-slate-600">
-                    Start chatting with the AI coach to discover your values
+                <div className="text-center py-16">
+                  <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <Target className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2 font-serif">
+                    Ready to Begin?
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Start chatting with the AI coach to discover your authentic values
                   </p>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   {/* Base Values */}
                   <div>
-                    <h3 className="font-semibold text-slate-900 mb-3 flex items-center space-x-2">
-                      <Badge variant="secondary">Base Values</Badge>
-                      <span className="text-sm text-slate-600">(2 required)</span>
-                    </h3>
+                    <div className="flex items-center space-x-3 mb-4">
+                      <Badge className="bg-primary text-white">Base Values</Badge>
+                      <span className="text-sm text-muted-foreground">(2 required)</span>
+                    </div>
                     <div className="space-y-4">
                       {values.filter(v => v.type === 'base').map((value) => (
-                        <Card key={value.id} className="border-l-4 border-l-blue-600">
-                          <CardContent className="pt-4">
-                            <h4 className="font-semibold text-slate-900 mb-2">{value.name}</h4>
-                            <p className="text-sm text-slate-600 mb-3 italic font-serif">
+                        <Card key={value.id} className="border-l-4 border-l-primary bg-primary/5">
+                          <CardContent className="pt-6">
+                            <h4 className="text-lg font-bold text-foreground mb-3 font-serif">{value.name}</h4>
+                            <p className="text-muted-foreground mb-4 italic font-serif text-base leading-relaxed">
                               "{value.statement}"
                             </p>
-                            <div className="space-y-1">
-                              <p className="text-xs font-medium text-slate-700">Key Principles:</p>
+                            <div className="space-y-2">
+                              <p className="text-sm font-semibold text-foreground">Key Principles:</p>
                               {value.principles.map((principle, idx) => (
-                                <p key={idx} className="text-xs text-slate-600">• {principle}</p>
+                                <p key={idx} className="text-sm text-muted-foreground">• {principle}</p>
                               ))}
                             </div>
                           </CardContent>
@@ -252,22 +268,22 @@ export default function DefineValues() {
                   {/* Top Values */}
                   {values.some(v => v.type === 'top') && (
                     <div>
-                      <h3 className="font-semibold text-slate-900 mb-3 flex items-center space-x-2">
-                        <Badge variant="secondary">Top Values</Badge>
-                        <span className="text-sm text-slate-600">(4 required)</span>
-                      </h3>
+                      <div className="flex items-center space-x-3 mb-4">
+                        <Badge className="bg-secondary text-white">Top Values</Badge>
+                        <span className="text-sm text-muted-foreground">(4 required)</span>
+                      </div>
                       <div className="space-y-4">
                         {values.filter(v => v.type === 'top').map((value) => (
-                          <Card key={value.id} className="border-l-4 border-l-emerald-600">
-                            <CardContent className="pt-4">
-                              <h4 className="font-semibold text-slate-900 mb-2">{value.name}</h4>
-                              <p className="text-sm text-slate-600 mb-3 italic font-serif">
+                          <Card key={value.id} className="border-l-4 border-l-secondary bg-secondary/5">
+                            <CardContent className="pt-6">
+                              <h4 className="text-lg font-bold text-foreground mb-3 font-serif">{value.name}</h4>
+                              <p className="text-muted-foreground mb-4 italic font-serif text-base leading-relaxed">
                                 "{value.statement}"
                               </p>
-                              <div className="space-y-1">
-                                <p className="text-xs font-medium text-slate-700">Key Principles:</p>
+                              <div className="space-y-2">
+                                <p className="text-sm font-semibold text-foreground">Key Principles:</p>
                                 {value.principles.map((principle, idx) => (
-                                  <p key={idx} className="text-xs text-slate-600">• {principle}</p>
+                                  <p key={idx} className="text-sm text-muted-foreground">• {principle}</p>
                                 ))}
                               </div>
                             </CardContent>
@@ -279,9 +295,9 @@ export default function DefineValues() {
 
                   {/* Complete Button */}
                   {values.length === 6 && (
-                    <div className="pt-4 border-t">
-                      <Button onClick={handleComplete} className="w-full bg-emerald-600 hover:bg-emerald-700">
-                        <CheckCircle className="w-4 h-4 mr-2" />
+                    <div className="pt-6 border-t">
+                      <Button onClick={handleComplete} className="w-full bg-secondary hover:bg-secondary/90 h-12 text-base font-medium shadow-lg">
+                        <CheckCircle className="w-5 h-5 mr-2" />
                         Complete Value Definition
                       </Button>
                     </div>
